@@ -8,10 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 import javax.imageio.ImageIO;
 
 /**
@@ -32,7 +29,7 @@ public final class Main {
 	// We'll hardwire these in, but more robust code would not do so.
 	private static enum Category {
 		airplanes, butterfly, flower, grand_piano, starfish, watch
-	};
+	}
 
 	public static int NUM_CATEGORIES = Category.values().length;
 
@@ -136,7 +133,7 @@ public final class Main {
 	}
 
 	public static void loadDataset(Dataset dataset, File dir) {
-		for (File file : dir.listFiles()) {
+		for (File file : Objects.requireNonNull(dir.listFiles())) {
 			// check all files
 			if (!file.isFile() || !file.getName().endsWith(".jpg")) {
 				continue;
@@ -225,9 +222,9 @@ public final class Main {
 		// extra feature.
 		System.out.println("\nThe input vector size is " + comma(inputVectorSize - 1) + ".\n");
 
-		Vector<Vector<Double>> trainFeatureVectors = new Vector<Vector<Double>>(trainset.getSize());
-		Vector<Vector<Double>> tuneFeatureVectors = new Vector<Vector<Double>>(tuneset.getSize());
-		Vector<Vector<Double>> testFeatureVectors = new Vector<Vector<Double>>(testset.getSize());
+		Vector<Vector<Double>> trainFeatureVectors = new Vector<>(trainset.getSize());
+		Vector<Vector<Double>> tuneFeatureVectors = new Vector<>(tuneset.getSize());
+		Vector<Vector<Double>> testFeatureVectors = new Vector<>(testset.getSize());
 
 		long start = System.currentTimeMillis();
 		fillFeatureVectors(trainFeatureVectors, trainset);
@@ -425,7 +422,6 @@ public final class Main {
 	 * @param upper
 	 *           The upper bound on the interval.
 	 * @return A random number in the interval [0, upper).
-	 * @see Utils#randomInInterval(int, int)
 	 */
 	public static int random0toNminus1(int upper) {
 		return randomInInterval(0, upper);
@@ -449,13 +445,13 @@ public final class Main {
 
 	private static int trainPerceptrons(Vector<Vector<Double>> trainFeatureVectors,
 			Vector<Vector<Double>> tuneFeatureVectors, Vector<Vector<Double>> testFeatureVectors) {
-		Vector<Vector<Double>> perceptrons = new Vector<Vector<Double>>(Category.values().length); // One
+		Vector<Vector<Double>> perceptrons = new Vector<>(Category.values().length); // One
 		// perceptron
 		// per
 		// category.
 
 		for (int i = 0; i < Category.values().length; i++) {
-			Vector<Double> perceptron = new Vector<Double>(inputVectorSize);
+			Vector<Double> perceptron = new Vector<>(inputVectorSize);
 			// Note: inputVectorSize includes the OUTPUT CATEGORY as the LAST element. That element in the perceptron will
 			// be the BIAS.
 			perceptrons.add(perceptron);
